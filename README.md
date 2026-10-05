@@ -1,0 +1,1 @@
+# guitar-trainer-CZ-2.0
