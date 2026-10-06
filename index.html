@@ -4,14 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Kytara – trenér akordů a strummingu</title>
-<meta name="theme-color" content="#14161a">
+<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png?v=2">
+<link rel="icon" type="image/png" sizes="32x32" href="./icon-32.png?v=2">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=2">
+<link rel="manifest" href="./manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Kytara">
-<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
 <meta name="mobile-web-app-capable" content="yes">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2?v=20261006"></script>
+<meta name="apple-mobile-web-app-title" content="Kytara">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#14161a">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#14161a;--card:#1e2128;--line:#2e333d;--txt:#e8eaed;--mut:#9aa0ab;--acc:#f5a524;--ok:#3ecf8e;--bad:#ef5350}
 *{box-sizing:border-box}
@@ -50,10 +52,34 @@ svg text{fill:var(--txt);font-family:inherit}
 label{color:var(--mut);font-size:13px}
 .small{font-size:13px;color:var(--mut)}
 table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left;font-size:14px}
-.home-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}.home-tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;min-height:118px}.home-tile .v{font-size:30px;font-weight:700;margin-top:4px}.home-tile .s{font-size:13px;color:var(--mut)}.home-hero{display:flex;gap:14px;align-items:center}.home-hero-icon{font-size:42px}.home-next h3{margin:0 0 6px}.progress-track{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:9px}.progress-track i{display:block;height:100%;background:var(--ok)}.lib-feature{position:relative}.ch-details{position:absolute;right:12px;top:12px;font-size:13px;padding:6px 10px;z-index:2}.lib-feature .row{padding-right:80px}.lib-ch{position:relative;padding-top:34px}.lib-ch .ch-details{top:8px;right:8px}.chord-modal{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 12px calc(16px + env(safe-area-inset-bottom,0px));background:rgba(0,0,0,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}.chord-modal.open{display:flex}.chord-modal-card{width:min(92vw,900px);height:min(76vh,760px);overflow:auto;background:var(--bg);border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.45);padding:16px}.chord-modal-head{position:sticky;top:-16px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 12px;background:var(--bg);border-bottom:1px solid var(--line);margin-bottom:12px}.chord-modal-close{width:40px;height:40px;border-radius:50%;padding:0;font-size:18px}.chord-modal .card{margin:10px 0}@media(max-width:560px){.home-summary{grid-template-columns:1fr}.home-hero-icon{font-size:34px}.chord-modal-card{width:94vw;height:76vh;padding:14px}.chord-modal-head{top:-14px;padding:14px 0 10px}}
 #authBox{display:none}
 /* Lekce */
 .lk-sec{padding:0}.lk-head{display:flex;gap:16px;align-items:center;padding:16px;cursor:pointer}.lk-num{font-size:34px;font-weight:700;color:var(--acc);min-width:30px;text-align:center}.lk-sec h3{margin:0 0 2px;font-size:18px}.lk-sec .meter{width:100%;max-width:260px;margin-top:8px;height:6px}.lk-sec .meter i{background:var(--ok);transition:width .3s}.lk-list{display:none;border-top:1px solid var(--line)}.lk-sec.open .lk-list{display:block}.lk-item{display:flex;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer}.lk-item:last-child{border-bottom:0}.lk-item:hover{background:rgba(245,165,36,.06)}.lk-item b{color:var(--acc);min-width:70px}.lk-item .st{margin-left:auto;font-size:13px;color:var(--mut);white-space:nowrap}.lk-item.done .st{color:var(--ok)}.lk-item.next{box-shadow:inset 3px 0 0 var(--acc)}.lk-step{display:flex;gap:12px;margin:10px 0}.lk-step>span{color:var(--acc);font-weight:700;min-width:20px}.lk-tip{border-left:3px solid var(--acc);background:rgba(245,165,36,.07);padding:8px 12px;border-radius:0 8px 8px 0;margin:12px 0}.lk-tab{white-space:pre;overflow:auto;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:13px}.lk-chords{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+/* Detail akordu (toast 3/4 obrazovky) */
+#libGrid .ch{position:relative;padding-top:32px}
+#libCard{position:relative}
+.dt-btn{position:absolute;top:8px;right:8px;z-index:2;font-size:13px;line-height:1.4;padding:2px 9px;border-radius:7px}
+.dt-ov{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.dt-ov.on{display:flex}
+.dt-box{width:min(92vw,820px);height:75vh;height:75dvh;display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:dtIn .18s ease-out}
+.dt-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.dt-head b{flex:1;font-size:17px}
+.dt-head button{font-size:13px;padding:4px 10px}
+.dt-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 16px}
+body.dt-open{overflow:hidden}
+@keyframes dtIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+/* Domů */
+.hm-hello{padding:14px 0 2px}.hm-hello h2{margin:0;font-size:24px}
+.hm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px;margin:12px 0}
+.hm-grid .card{margin:0}
+.hm-t{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+.hm-h{font-size:19px;font-weight:600}
+.hm-big{font-size:40px;font-weight:700;line-height:1.1;color:var(--acc)}
+.hm-bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:10px 0}.hm-bar i{display:block;height:100%;background:var(--ok);border-radius:5px}
+.hm-nums{display:grid;grid-template-columns:1fr 1fr;gap:14px}.hm-nums b{display:block;font-size:26px;line-height:1.2}
+.hm-sec{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;border-top:1px solid var(--line)}
+.hm-chips{display:flex;gap:8px;flex-wrap:wrap}.hm-chip{display:flex;flex-direction:column;align-items:center;min-width:72px;line-height:1.3}.hm-chip b{font-size:20px}
+.hm-quick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 </style>
 </head>
 <body>
@@ -67,6 +93,7 @@ table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--li
     <span id="micState" class="small">mikrofon vypnut</span>
   </div>
 </header>
+<div id="offBar" hidden style="text-align:center;padding:6px 12px;background:#3a2a0a;color:#f5a524;font-size:13px">Offline – cvičení se ukládá v zařízení a odešle se po připojení.</div>
 <div style="max-width:1100px;margin:auto;padding:0 18px">
   <div class="card" id="authBox">
     <div class="row">
@@ -80,28 +107,37 @@ table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--li
   </div>
 </div>
 <nav id="tabs">
-  <button data-t="lib" class="on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Domů</span></button>
-  <button data-t="check"><svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>Akordy</span></button>
+  <button data-t="home" class="on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Domů</span></button>
+  <button data-t="lib"><svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>Akordy</span></button>
   <button data-t="strum"><svg viewBox="0 0 24 24"><path d="M13 2L5 14h6l-1 8 8-12h-6z"/></svg><span>Rytmus</span></button>
   <button data-t="lessons"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Lekce</span></button>
   <button data-t="stats"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg><span>Statistiky</span></button>
 </nav>
 <main>
-<section id="lib" class="on">
-  <div class="home-hero card"><div class="home-hero-icon">🎸</div><div style="flex:1;min-width:220px"><h2 style="margin:0 0 4px">Vítej v Kytara – trenér</h2><div class="mut">Rychlý přehled tvého pokroku a poslední aktivity.</div></div></div>
-  <div id="homeSummary" class="home-summary"></div>
-  <div class="card home-next" id="homeNextLesson"></div>
+<section id="home" class="on"></section>
+<section id="lib">
+  <div class="card row" id="libCard"><button class="dt-btn" id="libDetails" type="button">Detaily</button>
+    <div id="libBig"></div>
+    <div>
+      <div class="big" id="libName"></div>
+      <div id="libInfo" class="mut"></div>
+      <div class="row" style="margin-top:10px"><button id="libPlay">▶ Přehrát nahrávku</button><button id="libSynth">▶ Syntetický zvuk</button></div>
+      <div id="libRec" class="small" style="margin-top:6px"></div>
+      <div class="row" style="margin-top:10px">
+        <button id="recUp" class="cloudOnly">⬆ Nahrát soubor</button>
+        <input type="file" id="recFile" accept="audio/*" style="display:none">
+        <button id="recMic" class="cloudOnly">⏺ Nahrát 3 s z mikrofonu</button>
+        <button id="recDel" class="cloudOnly">🗑 Smazat mou nahrávku</button>
+      </div>
+      <div id="recMsg" class="small" style="margin-top:6px">Vlastní nahrávky se ukládají jen po přihlášení.</div>
+    </div>
+  </div>
+  <div class="grid" id="libGrid"></div>
+  <p class="small">Struny zleva doprava: E A D G H e. Číslo v puntíku = prst (1 ukazováček … 4 malíček). ○ prázdná struna, ✕ nehrát.</p>
 </section>
-<section id="check">
-  <div class="card lib-feature"><button id="libDetails" class="ch-details">Detaily</button><div class="row">
-    <div id="libBig"></div><div><div class="big" id="libName"></div><div id="libInfo" class="mut"></div>
-    <div class="row" style="margin-top:10px"><button id="libPlay">▶ Přehrát nahrávku</button><button id="libSynth">▶ Syntetický zvuk</button></div>
-    <div id="libRec" class="small" style="margin-top:6px"></div>
-    <div class="row" style="margin-top:10px"><button id="recUp" class="cloudOnly">⬆ Nahrát soubor</button><input type="file" id="recFile" accept="audio/*" style="display:none"><button id="recMic" class="cloudOnly">⏺ Nahrát 3 s z mikrofonu</button><button id="recDel" class="cloudOnly">🗑 Smazat mou nahrávku</button></div>
-    <div id="recMsg" class="small" style="margin-top:6px">Vlastní nahrávky se ukládají jen po přihlášení.</div></div>
-  </div></div>
-  <div class="grid" id="libGrid"></div><p class="small">Struny zleva doprava: E A D G H e. Číslo v puntíku = prst (1 ukazováček … 4 malíček). ○ prázdná struna, ✕ nehrát.</p>
-</section>
+
+
+
 <section id="strum">
   <div class="card">
     <div class="row">
@@ -136,7 +172,12 @@ table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--li
   </div>
 </section>
 <section id="lessons"><div id="lkRoot"></div></section></main>
-<div id="chordDetailsModal" class="chord-modal" aria-hidden="true"><div class="chord-modal-card" role="dialog" aria-modal="true" aria-labelledby="chordDetailsTitle"><div class="chord-modal-head"><div><div class="small">Detail akordu</div><h2 id="chordDetailsTitle" style="margin:0">Akord</h2></div><button id="chordDetailsClose" class="chord-modal-close" aria-label="Zavřít">✕</button></div><div id="chordDetailsBody"><div class="card">
+<div class="dt-ov" id="dtOv">
+  <div class="dt-box" role="dialog" aria-modal="true" aria-labelledby="dtTitle">
+    <div class="dt-head"><b id="dtTitle">Detaily akordu</b><button id="dtMic" type="button">🎤 Zapnout mikrofon</button><button id="dtClose" type="button" aria-label="Zavřít">✕</button></div>
+    <div class="dt-body" id="dtBody">
+<section id="check">
+  <div class="card">
     <div class="row">
       <div id="chkBig"></div>
       <div style="flex:1;min-width:260px">
@@ -161,7 +202,11 @@ table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--li
   <div class="card small">
     <b>Vyhodnocení:</b> chromagram z mikrofonu se porovnává se šablonou akordu (50 % teorie, 50 % reálná nahrávka). „Naučit z mého hraní“ šablonu přepíše tvým vlastním správným zahráním; po přihlášení se profil ukládá do cloudu.<br>
     <b>Omezení:</b> analyzují se výšky tónů, ne jednotlivé struny. Kytara musí být naladěná. Do statistik se ukládají jen úspěšně zahrané akordy, neúspěšné pokusy ne.
-  </div></div></div></div>
+  </div>
+</section>
+    </div>
+  </div>
+</div>
 
 <script>
 const SB_URL="https://xfixrreldkymvbwxblws.supabase.co",SB_KEY="sb_publishable_AZU6X-gTJamocfJJ6vFObg_ztLx1bnd";
@@ -379,16 +424,23 @@ function showLib(c){libSel=c;$('libBig').innerHTML=diagram(c,180);$('libName').t
   $('libInfo').textContent='Tóny: '+c.notes.join(' – ')+'  |  Struny: '+c.f.map(f=>f<0?'x':f).join(' ');
   $('recDel').disabled=!REC_USER[c.n];
   document.querySelectorAll('#libGrid .ch').forEach(e=>e.classList.toggle('sel',e.dataset.n===c.n))}
-function openChordDetails(c){setTarget(c);$('chordDetailsTitle').textContent='Akord '+c.n;$('chordDetailsModal').classList.add('open');$('chordDetailsModal').setAttribute('aria-hidden','false');$('chordDetailsBody').scrollTop=0}
-function closeChordDetails(){$('chordDetailsModal').classList.remove('open');$('chordDetailsModal').setAttribute('aria-hidden','true')}
-function renderGrid(){$('libGrid').innerHTML='';CH.forEach(c=>{const d=document.createElement('div');d.className='ch lib-ch';d.dataset.n=c.n;d.innerHTML='<button class="ch-details" type="button">Detaily</button>'+diagram(c,110)+(hasRec(c)?'<span class="small">🔊 '+(REC_USER[c.n]?'moje nahrávka':'nahrávka')+'</span>':'');d.onclick=()=>showLib(c);d.querySelector('.ch-details').onclick=e=>{e.stopPropagation();openChordDetails(c)};$('libGrid').appendChild(d)})}
-$('libPlay').onclick=()=>playChord(libSel);$('libSynth').onclick=()=>playChord(libSel,true);$('libDetails').onclick=()=>openChordDetails(libSel);$('chordDetailsClose').onclick=closeChordDetails;$('chordDetailsModal').onclick=e=>{if(e.target.id==='chordDetailsModal')closeChordDetails()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeChordDetails()});renderGrid();showLib(CH[0]);
+function renderGrid(){$('libGrid').innerHTML='';
+  CH.forEach(c=>{const d=document.createElement('div');d.className='ch';d.dataset.n=c.n;
+    d.innerHTML='<button class="dt-btn" type="button">Detaily</button>'+diagram(c,110)+(hasRec(c)?'<span class="small">🔊 '+(REC_USER[c.n]?'moje nahrávka':'nahrávka')+'</span>':'');d.onclick=()=>showLib(c);d.querySelector('.dt-btn').onclick=e=>{e.stopPropagation();showLib(c);openDetails(c)};$('libGrid').appendChild(d)});}
+$('libPlay').onclick=()=>playChord(libSel);
+$('libDetails').onclick=()=>openDetails(libSel);
+$('libSynth').onclick=()=>playChord(libSel,true);
+renderGrid();showLib(CH[0]);
 
-/* ===== kontrola akordu v detailu ===== */
+/* ===== kontrola ===== */
 let target=CH[0],streak=0,okCount=0,holdFrames=0;
 CH.forEach(c=>$('chkSel').add(new Option(c.n,c.n)));
-function setTarget(c){target=c;$('chkSel').value=c.n;$('chkBig').innerHTML=diagram(c,170);$('chordDetailsTitle').textContent='Akord '+c.n;holdFrames=0;$('chkPcs').innerHTML='';for(let k=0;k<12;k++){const d=document.createElement('div');d.className='pc';d.id='pc'+k;d.textContent=NAMES[k];$('chkPcs').appendChild(d)}}
-$('chkSel').onchange=e=>setTarget(byName(e.target.value));$('chkRand').onclick=()=>setTarget(CH[Math.floor(Math.random()*CH.length)]);$('chkListen').onclick=()=>playChord(target);setTarget(CH[0]);calInfo();
+function setTarget(c){target=c;$('chkSel').value=c.n;$('chkBig').innerHTML=diagram(c,170);holdFrames=0;
+  $('chkPcs').innerHTML='';for(let k=0;k<12;k++){const d=document.createElement('div');d.className='pc';d.id='pc'+k;d.textContent=NAMES[k];$('chkPcs').appendChild(d)}}
+$('chkSel').onchange=e=>setTarget(byName(e.target.value));
+$('chkRand').onclick=()=>setTarget(CH[Math.floor(Math.random()*CH.length)]);
+$('chkListen').onclick=()=>playChord(target);
+setTarget(CH[0]);calInfo();
 function updateCheck(a){
   if(!$('check').classList.contains('on'))return;
   if(calStep(a))return;
@@ -500,16 +552,17 @@ onsetCbs.push(t=>{
 });
 
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
+  closeDetails();
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));
-  if(b.dataset.t!=='check')closeChordDetails();
   if(b.dataset.t!=='strum'&&playing)stop();
   if(b.dataset.t==='stats')loadStats();
-  if(b.dataset.t==='lib'&&window.refreshHomeSummary)window.refreshHomeSummary();
+  if(b.dataset.t==='home')renderHome();
+  window.scrollTo(0,0);
 });
 
 /* ===== Supabase: účet, nastavení, statistiky, nahrávky ===== */
-let sb=null,user=null,profileName=null,saveT=null;
+let sb=null,user=null,profileName=null,saveT=null,homeRows=null,homeTok=0;
 const SET_IDS=['bpm','patSel','prog','bars','clickOn','strumOn','micTiming','chkAuto'];
 function collectSettings(){const o={};SET_IDS.forEach(id=>{const e=$(id);o[id]=e.type==='checkbox'?e.checked:e.value});o.lastChord=target.n;return o}
 function applySettings(d){
@@ -519,67 +572,75 @@ function applySettings(d){
   if(d.lastChord&&byName(d.lastChord))setTarget(byName(d.lastChord));
 }
 function saveSettingsSoon(){
-  if(!user)return;clearTimeout(saveT);
+  try{localStorage.setItem('gtrSettings',JSON.stringify(collectSettings()))}catch(e){}
+  if(!user)return;
+  try{localStorage.setItem('gtrSettingsDirty','1')}catch(e){}
+  clearTimeout(saveT);
   saveT=setTimeout(async()=>{
-    const r=await sb.from('settings').upsert({user_id:user.id,data:collectSettings(),updated_at:new Date().toISOString()});
-    if(r.error)console.warn('settings',r.error);
+    try{
+      const r=await sb.from('settings').upsert({user_id:user.id,data:collectSettings(),updated_at:new Date().toISOString()});
+      if(r.error)console.warn('settings',r.error);else localStorage.removeItem('gtrSettingsDirty');
+    }catch(e){console.warn('settings',e)}
   },800);
 }
 SET_IDS.forEach(id=>$(id).addEventListener('change',saveSettingsSoon));
 $('bpm').addEventListener('input',saveSettingsSoon);
 $('chkSel').addEventListener('change',saveSettingsSoon);
+try{const ls=JSON.parse(localStorage.getItem('gtrSettings')||'null');if(ls)applySettings(ls)}catch(e){console.warn('local settings',e)}
+/* statistiky cvičení: fronta v zařízení, odeslání po připojení (každý záznam nese čas vzniku a ID uživatele) */
+const SQ_KEY='gtrStatsQueue';
+const sqGet=()=>{try{return JSON.parse(localStorage.getItem(SQ_KEY)||'[]')||[]}catch(e){return[]}};
+const sqSet=a=>{try{localStorage.setItem(SQ_KEY,JSON.stringify(a.slice(-500)))}catch(e){}};
+let sqBusy=false;
+async function flushStats(){
+  if(sqBusy||!user||!sb)return;
+  sqBusy=true;
+  try{
+    for(let g=0;g<600;g++){
+      const it=sqGet().find(x=>x.u===user.id);if(!it)break;
+      let r;try{r=await sb.from('practice_stats').insert(it.r)}catch(e){break}
+      const cur=sqGet(),k=cur.findIndex(x=>x.id===it.id);
+      if(!r.error){if(k>=0)cur.splice(k,1);sqSet(cur);continue}
+      if(!r.error.code)break;                                   // chyba sítě – zkusí se znovu později
+      if(k>=0){if(++cur[k].tries>=5)cur.splice(k,1);sqSet(cur)}  // trvalá chyba záznamu – po 5 pokusech se zahodí
+      console.warn('stat',r.error);break;
+    }
+  }finally{sqBusy=false}
+}
 async function logStat(row){
   if(!user)return;
-  const r=await sb.from('practice_stats').insert(row);
-  if(r.error)console.warn('stat',r.error);
+  sqSet(sqGet().concat([{id:Date.now()+'-'+Math.random().toString(36).slice(2,8),u:user.id,tries:0,r:Object.assign({created_at:new Date().toISOString()},row)}]));
+  flushStats();
 }
+function setOffBar(){const e=$('offBar');if(e)e.hidden=navigator.onLine}
+window.addEventListener('online',()=>{setOffBar();flushStats()});
+window.addEventListener('offline',setOffBar);
+setOffBar();
 function setAuthMsg(t,bad){$('aMsg').textContent=t;$('aMsg').className='small '+(bad?'bad':'')}
 function initCloud(){
-  const api=window.supabase;
-  if(!api||typeof api.createClient!=='function'){
-    $('cloudState').textContent='cloud nedostupný (offline režim)';
-    $('cloudBtn').disabled=false;
-    document.querySelectorAll('.cloudOnly').forEach(b=>b.disabled=true);
-    return;
-  }
-  try{
-    sb=api.createClient(SB_URL,SB_KEY);
-    if(!sb||!sb.auth||typeof sb.auth.getSession!=='function'){
-      sb=null;
-      $('cloudState').textContent='cloud nedostupný (offline režim)';
-      document.querySelectorAll('.cloudOnly').forEach(b=>b.disabled=true);
-      return;
-    }
-    sb.auth.getSession().then(({data})=>setUser(data&&data.session?data.session.user:null)).catch(e=>{
-      console.warn('Supabase getSession',e);
-      $('cloudState').textContent='offline režim';
-    });
-    sb.auth.onAuthStateChange((_e,s)=>setTimeout(()=>setUser(s?s.user:null),0));
-  }catch(e){
-    console.warn('Supabase init',e);
-    sb=null;
-    $('cloudState').textContent='offline režim';
-    document.querySelectorAll('.cloudOnly').forEach(b=>b.disabled=true);
-  }
+  if(!window.supabase){$('cloudState').textContent='cloud nedostupný (offline režim)';$('cloudBtn').disabled=true;document.querySelectorAll('.cloudOnly').forEach(b=>b.disabled=true);return}
+  sb=window.supabase.createClient(SB_URL,SB_KEY);
+  sb.auth.getSession().then(({data})=>setUser(data.session?data.session.user:null));
+  sb.auth.onAuthStateChange((_e,s)=>setTimeout(()=>setUser(s?s.user:null),0));
 }
 async function setUser(u){
   if((u&&user&&u.id===user.id)||(!u&&!user)){return}
-  user=u;
+  user=u;homeRows=null;
   if(!u){profileName=null;Object.keys(REC_USER).forEach(k=>{delete REC_USER[k];delete bufCache[k]});
     $('cloudBtn').textContent='☁ Přihlásit';$('cloudState').textContent='offline režim';
-    document.querySelectorAll('.cloudOnly').forEach(b=>b.disabled=true);renderGrid();showLib(libSel);if(window.refreshHomeSummary)window.refreshHomeSummary();if(window.lessonsSync)window.lessonsSync();return}
+    document.querySelectorAll('.cloudOnly').forEach(b=>b.disabled=true);renderGrid();showLib(libSel);if(window.lessonsSync)window.lessonsSync();homeRefresh();return}
   $('authBox').style.display='none';$('cloudBtn').textContent='⎋ Odhlásit';
   $('cloudState').textContent='synchronizuji…';
   document.querySelectorAll('.cloudOnly').forEach(b=>b.disabled=false);
   await loadAll();
-  if(window.refreshHomeSummary)window.refreshHomeSummary();
 }
 async function loadAll(){
   try{
     const p=await sb.from('profiles').select('display_name').eq('id',user.id).maybeSingle();
     profileName=p.data?p.data.display_name:'Jakub';
     const s=await sb.from('settings').select('data').eq('user_id',user.id).maybeSingle();
-    if(s.data&&Object.keys(s.data.data||{}).length)applySettings(s.data.data);
+    if(localStorage.getItem('gtrSettingsDirty')==='1')saveSettingsSoon();
+    else if(s.data&&Object.keys(s.data.data||{}).length){applySettings(s.data.data);try{localStorage.setItem('gtrSettings',JSON.stringify(s.data.data))}catch(e){}}
     const cp=await sb.from('chord_profiles').select('chord,chroma');
     if(cp.data&&cp.data.length){cp.data.forEach(r=>{USER_REFS[r.chord]=r.chroma});localStorage.setItem('gtrRefs',JSON.stringify(USER_REFS));calInfo()}
     const rc=await sb.from('recordings').select('*').eq('is_active',true).order('created_at',{ascending:false});
@@ -592,23 +653,24 @@ async function loadAll(){
     }
     if(window.lessonsSync)await window.lessonsSync();
     $('cloudState').textContent='přihlášen: '+profileName;
-    renderGrid();showLib(libSel);
+    renderGrid();showLib(libSel);homeRefresh();flushStats();
   }catch(e){$('cloudState').textContent='chyba synchronizace: '+e.message}
 }
 $('cloudBtn').onclick=async()=>{
-  if(user){if(sb&&sb.auth&&typeof sb.auth.signOut==='function')await sb.auth.signOut();return}
+  if(user){await sb.auth.signOut();return}
   $('authBox').style.display=$('authBox').style.display==='block'?'none':'block';
 };
 $('aLogin').onclick=async()=>{
-  if(!sb||!sb.auth||typeof sb.auth.signInWithPassword!=='function'){setAuthMsg('Cloud není dostupný – aplikace běží offline.',true);return}
   setAuthMsg('přihlašuji…');
-  try{const r=await sb.auth.signInWithPassword({email:$('aMail').value.trim(),password:$('aPass').value});setAuthMsg(r.error?r.error.message:'OK',!!r.error)}catch(e){setAuthMsg(e.message||'Přihlášení selhalo.',true)}
+  const r=await sb.auth.signInWithPassword({email:$('aMail').value.trim(),password:$('aPass').value});
+  setAuthMsg(r.error?r.error.message:'OK',!!r.error);
 };
 $('aSignup').onclick=async()=>{
-  if(!sb||!sb.auth||typeof sb.auth.signUp!=='function'){setAuthMsg('Cloud není dostupný – aplikace běží offline.',true);return}
   const pw=$('aPass').value;if(pw.length<8){setAuthMsg('Heslo musí mít aspoň 8 znaků.',true);return}
   setAuthMsg('registruji…');
-  try{const r=await sb.auth.signUp({email:$('aMail').value.trim(),password:pw,options:{data:{display_name:$('aName').value.trim()||'Jakub'}}});if(r.error)setAuthMsg(r.error.message,true);else setAuthMsg(r.data.session?'Registrace dokončena.':'Registrace odeslána – potvrď e-mail a pak se přihlas.')}catch(e){setAuthMsg(e.message||'Registrace selhala.',true)}
+  const r=await sb.auth.signUp({email:$('aMail').value.trim(),password:pw,options:{data:{display_name:$('aName').value.trim()||'Jakub'}}});
+  if(r.error)setAuthMsg(r.error.message,true);
+  else setAuthMsg(r.data.session?'Registrace dokončena.':'Registrace odeslána – potvrď e-mail a pak se přihlas.');
 };
 async function uploadRecording(blob,mime,dur){
   const chord=libSel.n,ext=mime.includes('webm')?'webm':mime.includes('mpeg')?'mp3':mime.includes('mp4')?'m4a':mime.includes('ogg')?'ogg':'wav';
@@ -673,10 +735,99 @@ async function loadStats(){
 }
 $('stRefresh').onclick=loadStats;
 document.querySelectorAll('.cloudOnly').forEach(b=>b.disabled=true);
-try{initCloud()}catch(e){console.warn('Cloud init',e);$('cloudState').textContent='offline režim'}
+initCloud();
+/* ===== Detail akordu (toast s obsahem kontroly akordů) ===== */
+function openDetails(c){
+  if(!c)return;
+  setTarget(c);
+  $('dtTitle').textContent='Detaily akordu '+c.n;
+  $('dtMic').textContent=$('micBtn').textContent;
+  $('check').classList.add('on');
+  $('dtOv').classList.add('on');document.body.classList.add('dt-open');
+  $('dtBody').scrollTop=0;
+}
+function closeDetails(){
+  $('dtOv').classList.remove('on');document.body.classList.remove('dt-open');
+  $('check').classList.remove('on');
+}
+$('dtClose').onclick=closeDetails;
+$('dtOv').addEventListener('click',e=>{if(e.target===$('dtOv'))closeDetails()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('dtOv').classList.contains('on'))closeDetails()});
+$('dtMic').onclick=()=>$('micBtn').click();
+new MutationObserver(()=>{$('dtMic').textContent=$('micBtn').textContent}).observe($('micBtn'),{childList:true,characterData:true,subtree:true});
+
+/* ===== Domů (přehled) ===== */
+const escH=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dayKey=d=>d.toLocaleDateString('sv-SE');
+const avgOf=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+const pctTxt=v=>v==null?'–':Math.round(v)+' %';
+const dniTxt=n=>n===1?'den':(n>=2&&n<=4)?'dny':'dní';
+function homeCalc(rows){
+  const chords=rows.filter(x=>x.kind==='chord'),strums=rows.filter(x=>x.kind==='strum');
+  const days=new Set(rows.map(x=>dayKey(new Date(x.created_at))));
+  let streak=0,d=new Date();if(!days.has(dayKey(d)))d.setDate(d.getDate()-1);
+  while(days.has(dayKey(d))){streak++;d.setDate(d.getDate()-1)}
+  const tk=dayKey(new Date()),wk=Date.now()-7*864e5;
+  const per=Object.create(null);CH.forEach(c=>per[c.n]=0);chords.forEach(x=>{if(x.chord in per)per[x.chord]++});
+  const weakest=CH.map((c,i)=>({n:c.n,k:per[c.n],i})).sort((a,b)=>a.k-b.k||a.i-b.i).slice(0,3);
+  const sim=avgOf(chords.map(x=>x.similarity).filter(v=>v!=null)),rh=avgOf(strums.map(x=>x.in_rhythm_pct).filter(v=>v!=null));
+  return {chords:chords.length,strums:strums.length,sim:sim==null?null:sim*100,rh,streak,
+    todayN:rows.filter(x=>dayKey(new Date(x.created_at))===tk).length,
+    weekN:rows.filter(x=>new Date(x.created_at).getTime()>=wk).length,
+    weakest,lastStrum:strums[0]||null,capped:rows.length>=1000};
+}
+function paintHome(state,rows){
+  const L=window.lessonsApi?window.lessonsApi.info():null;
+  const nm=user&&profileName?', '+escH(profileName):'';
+  const dt=new Date().toLocaleDateString('cs-CZ',{weekday:'long',day:'numeric',month:'long'});
+  let h='<div class="hm-hello"><h2>Ahoj'+nm+'! 👋</h2><div class="small">'+escH(dt)+' · přehled tvého cvičení</div></div><div class="hm-grid">';
+  if(L){
+    if(L.next)h+='<div class="card"><div class="hm-t">Pokračuj v lekci</div><div class="hm-h">Lekce '+L.next.id+': '+escH(L.next.title)+'</div><div class="small">Sekce '+L.next.sec.id+' · '+escH(L.next.sec.title)+' · '+escH(L.next.why)+'</div><div class="mut" style="margin:8px 0 12px">'+escH(L.next.goal)+'</div><button class="on" data-act="lesson" data-id="'+L.next.id+'">Pokračovat →</button></div>';
+    else h+='<div class="card"><div class="hm-t">Pokračuj v lekci</div><div class="hm-h">🎉 Všechny lekce máš hotové</div><div class="mut" style="margin:8px 0 12px">Můžeš se k nim kdykoliv vrátit.</div><button class="on" data-act="tab" data-t="lessons">Zobrazit lekce</button></div>';
+    h+='<div class="card"><div class="hm-t">Celkový postup</div><div class="hm-big">'+L.pct+' %</div><div class="small">'+L.done+' z '+L.total+' lekcí hotovo</div><div class="hm-bar"><i style="width:'+L.pct+'%"></i></div>'+L.sections.map(x=>'<div class="hm-sec"><span>'+escH(x.title)+'</span><span class="mut">'+x.done+'/'+x.total+'</span></div>').join('')+'</div>';
+  }
+  if(state==='rows'&&rows){
+    const c=homeCalc(rows);
+    h+='<div class="card"><div class="hm-t">Cvičení</div><div class="hm-nums"><div><b>'+c.chords+'</b><span class="small">zahraných akordů</span></div><div><b>'+c.strums+'</b><span class="small">cvičení rytmu</span></div><div><b>'+pctTxt(c.sim)+'</b><span class="small">průměrná shoda akordů</span></div><div><b>'+pctTxt(c.rh)+'</b><span class="small">průměrně v rytmu</span></div></div>'+(c.capped?'<div class="small" style="margin-top:10px">Počítáno z posledních 1000 záznamů.</div>':'')+'</div>';
+    h+='<div class="card"><div class="hm-t">Série</div><div class="hm-big">🔥 '+c.streak+' <span style="font-size:18px;font-weight:600">'+dniTxt(c.streak)+'</span></div><div class="small" style="margin-top:6px">Dnes: '+c.todayN+' · posledních 7 dní: '+c.weekN+'</div>'+(c.todayN?'':'<div class="mut" style="margin-top:8px">Dnes zatím žádné cvičení.</div>')+'</div>';
+    h+='<div class="card"><div class="hm-t">Akordy k procvičení</div><div class="hm-chips">'+c.weakest.map(w=>'<button class="hm-chip" data-act="chord" data-n="'+escH(w.n)+'"><b>'+escH(w.n)+'</b><span class="small">'+w.k+'×</span></button>').join('')+'</div><div class="small" style="margin-top:10px">Akordy, které jsi zatím zahrál nejméně. Klepnutím otevřeš detail.</div></div>';
+    const ls=c.lastStrum;
+    h+='<div class="card"><div class="hm-t">Poslední cvičení rytmu</div>'+(ls?'<div class="hm-h">'+escH(ls.pattern||'–')+(ls.bpm?' · '+escH(ls.bpm)+' BPM':'')+'</div><div class="mut" style="margin-top:4px">V rytmu: '+pctTxt(ls.in_rhythm_pct)+'</div><div class="small" style="margin-top:4px">'+escH(new Date(ls.created_at).toLocaleString('cs-CZ'))+'</div>':'<div class="mut">Zatím žádné cvičení rytmu. Zapni v Rytmu hodnocení mikrofonem a zahraj si první vzor.</div>')+'</div>';
+  }else if(state==='load'){
+    h+='<div class="card"><div class="hm-t">Cvičení</div><div class="mut">Načítám statistiky…</div></div>';
+  }else if(state==='err'){
+    h+='<div class="card"><div class="hm-t">Cvičení</div><div class="bad">Statistiky se nepodařilo načíst.</div><div class="small" style="margin-top:8px">Zkus to znovu otevřením záložky Domů.</div></div>';
+  }else{
+    h+='<div class="card"><div class="hm-t">Cvičení a statistiky</div>'+(sb?'<div class="hm-h">Přihlas se a sleduj postup</div><div class="mut" style="margin:8px 0 12px">Po přihlášení se tu zobrazí zahrané akordy, série dní, akordy k procvičení i poslední cvičení rytmu.</div><button class="on" data-act="login">☁ Přihlásit</button>':'<div class="hm-h">Cloud není dostupný</div><div class="mut" style="margin-top:8px">V offline režimu se statistiky neukládají.</div>')+'</div>';
+  }
+  h+='<div class="card"><div class="hm-t">Rychlý start</div><div class="hm-quick"><button data-act="tab" data-t="lib">🎸 Akordy</button><button data-act="tab" data-t="strum">🥁 Rytmus</button><button data-act="rand">🎲 Náhodný akord</button><button data-act="tab" data-t="lessons">📚 Lekce</button></div></div></div>';
+  $('home').innerHTML=h;
+}
+async function renderHome(){
+  const tok=++homeTok;
+  if(!user||!sb){paintHome('out');return}
+  paintHome(homeRows?'rows':'load',homeRows);
+  try{
+    const r=await sb.from('practice_stats').select('*').order('created_at',{ascending:false}).limit(1000);
+    if(tok!==homeTok)return;
+    if(r.error)throw r.error;
+    homeRows=r.data||[];paintHome('rows',homeRows);
+  }catch(e){console.warn('home',e);if(tok===homeTok&&!homeRows)paintHome('err')}
+}
+function homeRefresh(){if($('home').classList.contains('on'))renderHome()}
+$('home').addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act;
+  if(a==='lesson')window.lessonsApi.open(+b.dataset.id);
+  else if(a==='tab')document.querySelector('#tabs button[data-t="'+b.dataset.t+'"]').click();
+  else if(a==='chord'){const c=byName(b.dataset.n);showLib(c);openDetails(c)}
+  else if(a==='rand'){const c=CH[Math.floor(Math.random()*CH.length)];showLib(c);openDetails(c)}
+  else if(a==='login'){$('cloudBtn').click();window.scrollTo(0,0)}
+});
+
 /* ===== Lekce ===== */
 (function(){
-const KEY='gtrLessonsDone',DATA_KEY='gtrLessonsData',LAST_KEY='gtrLessonsLast';
+const KEY='gtrLessonsDone',DATA_KEY='gtrLessonsData';
 const sections=[
 {id:1,title:'Základní akordy',desc:'Naučíš se C, G, D, Em a Am, první rytmus a změny akordů.',lessons:[
 {id:1,title:'Akord C; G',goal:'Čistě zahrát C a G, každý držet 4 doby.',go:{tab:'check',chord:'C'},steps:['Postav prsty přesně podle diagramu akordu.','Přejeď všechny hrané struny a zkontroluj drnčení.','Na Kontrole akordů zahraj C a G třikrát správně.'],tip:'Prst musí stát na špičce těsně před pražcem.',chords:['C','G']},
@@ -686,7 +837,7 @@ const sections=[
 {id:2,title:'Pokročilé akordy',desc:'Další akordy, barré a první melodie.',lessons:[
 {id:5,title:'Akordy E; A; Dm',goal:'Zahrát E, A a Dm čistě.',go:{tab:'check',chord:'E'},steps:['E má tvar Am posunutý o strunu.','A hraj bez nejhlubší struny.','Každý akord ověř třikrát.'],tip:'Tři prsty v A musí stát vedle sebe.',chords:['E','A','Dm']},
 {id:6,title:'Barré: F a Hm',goal:'Zahrát F a Hm bez tlumených strun.',go:{tab:'check',chord:'F'},steps:['Ukazovák polož těsně před pražec.','Nejdříve procvič samotné barré.','Přidej ostatní prsty až potom.'],tip:'Barré je dlouhodobá technika, ne jednorázový trik.',chords:['F','Hm']},
-{id:7,title:'První melodie',goal:'Zahrát jednoduchou melodii po jednotlivých strunách.',go:{tab:'check',chord:'C'},steps:['Hraj pomalu na tenkých strunách.','Používej střídavý úder dolů-nahoru.','Postupně přidej metronom.'],tip:'U melodie je důležitější čistota než rychlost.',tab:'e|-0-0-1-3-3-1-0---------0-0---------\nB|-----------------3-1-1-3-----3-3-'}]},
+{id:7,title:'První melodie',goal:'Zahrát jednoduchou melodii po jednotlivých strunách.',go:{tab:'lib',chord:'C'},steps:['Hraj pomalu na tenkých strunách.','Používej střídavý úder dolů-nahoru.','Postupně přidej metronom.'],tip:'U melodie je důležitější čistota než rychlost.',tab:'e|-0-0-1-3-3-1-0---------0-0---------\nB|-----------------3-1-1-3-----3-3-'}]},
 {id:3,title:'Rytmus do hloubky',desc:'Vzory, které se skutečně používají v písničkách.',lessons:[
 {id:8,title:'Pop/folk D-DU-UDU',goal:'Zahrát vzor v 80 BPM s postupem Am C G D.',go:{tab:'strum',pat:2,bpm:80,prog:'Am C G D'},steps:['Nejdříve vyťukej vzor na jednom akordu.','Přidej postup Am C G D.','Zapni hodnocení rytmu.'],tip:'Vynechané údery jsou stejně důležité jako hrané.'},
 {id:9,title:'Country a balada',goal:'Rozlišit a zahrát dva odlišné vzory.',go:{tab:'strum',pat:3,bpm:70,prog:'C G Am Em'},steps:['Country má důraz na první a třetí dobu.','Baladu hraj pomaleji a vzdušněji.','Každý vzor udrž čtyři takty.'],tip:'Při vynechání se ruka nezastavuje.'}]}
@@ -736,17 +887,35 @@ async function doSync(){
     remote.forEach(id=>{if(known.has(id))done.add(id)});
     save();setSync('ok');
   }catch(e){console.warn('lesson_progress sync',e);setSync('err')}
-  render();
+  render();homeRefresh();
 }
 window.lessonsSync=()=>{chain=chain.then(doSync);return chain};
 window.addEventListener('online',()=>{if(Object.keys(queue).length)window.lessonsSync()});
 function lesson(id){return all.find(x=>x.id===id)}
 function render(){if(view)return renderDetail(view);let count=all.filter(x=>done.has(x.id)).length;let h='<div class="card"><h2 style="margin:0 0 6px">Výukový plán</h2><div class="mut">Hotovo '+count+' z '+all.length+' lekcí</div><div class="meter" style="width:100%;margin-top:10px"><i style="width:'+(count/all.length*100)+'%;background:var(--ok)"></i></div><div class="small" id="lkSync" style="margin-top:8px">'+statusText(sync)+'</div></div>';h+=sections.map(s=>{let c=s.lessons.filter(x=>done.has(x.id)).length;return '<div class="card lk-sec '+(open.has(s.id)?'open':'')+'" data-s="'+s.id+'"><div class="lk-head"><div class="lk-num">'+s.id+'</div><div style="flex:1"><h3>'+s.title+'</h3><div class="mut">'+s.desc+'</div><div class="meter"><i style="width:'+(c/s.lessons.length*100)+'%"></i></div></div><span class="small">'+c+'/'+s.lessons.length+'</span></div><div class="lk-list">'+s.lessons.map(l=>'<div class="lk-item '+(done.has(l.id)?'done':'')+'" data-l="'+l.id+'"><b>Lekce '+l.id+'</b><span>'+l.title+'</span><span class="st">'+(done.has(l.id)?'✔ hotovo':'otevřít')+'</span></div>').join('')+'</div></div>'}).join('');$('lkRoot').innerHTML=h;document.querySelectorAll('.lk-head').forEach(x=>x.onclick=()=>{let c=x.parentElement,id=+c.dataset.s;c.classList.toggle('open');c.classList.contains('open')?open.add(id):open.delete(id)});document.querySelectorAll('.lk-item').forEach(x=>x.onclick=()=>{view=+x.dataset.l;render()})}
-function renderDetail(id){let l=lesson(id),sec=sections.find(s=>s.lessons.includes(l));localStorage.setItem(LAST_KEY,String(id));$('lkRoot').innerHTML='<div class="card"><button id="lkBack">‹ Zpět na plán</button><h2 style="margin:14px 0 4px">Lekce '+l.id+': '+l.title+'</h2><div class="small">Sekce '+sec.id+' · '+sec.title+'</div>'+(l.chords?'<div class="lk-chords">'+l.chords.map(c=>'<div class="ch">'+diagram(byName(c),100)+'</div>').join('')+'</div>':'')+'<div class="lk-tip"><b>Cíl:</b> '+l.goal+'</div>'+l.steps.map((x,i)=>'<div class="lk-step"><span>'+(i+1)+'</span><div>'+x+'</div></div>').join('')+(l.tab?'<div class="lk-tab">'+l.tab+'</div>':'')+'<div class="lk-tip">💡 '+l.tip+'</div><div class="row" style="margin-top:14px"><button id="lkGo" class="on">Procvičit →</button><button id="lkDone">'+(done.has(l.id)?'Zrušit označení':'Označit jako hotovou')+'</button></div><div class="small" id="lkSync" style="margin-top:10px">'+statusText(sync)+'</div></div>';$('lkBack').onclick=()=>{view=null;render()};$('lkGo').onclick=()=>{document.querySelector('#tabs button[data-t="'+l.go.tab+'"]').click();try{if(l.go.chord){l.go.tab==='check'?setTarget(byName(l.go.chord)):showLib(byName(l.go.chord))}if(l.go.pat!=null){$('patSel').value=l.go.pat;$('patSel').dispatchEvent(new Event('change'))}if(l.go.bpm){$('bpm').value=l.go.bpm;$('bpm').dispatchEvent(new Event('input'))}if(l.go.prog)$('prog').value=l.go.prog}catch(e){console.warn(e)}};$('lkDone').onclick=()=>{const on=!done.has(l.id);on?done.add(l.id):done.delete(l.id);save();push(l.id,on);render()}}
-document.querySelector('#tabs button[data-t="lessons"]').addEventListener('click',()=>{view=null;render()});render()})()
-
-/* ===== Domů: souhrn ===== */
-window.refreshHomeSummary=async function(){const box=$('homeSummary'),next=$('homeNextLesson');if(!box||!next)return;const doneIds=JSON.parse(localStorage.getItem('gtrLessonsDone')||'[]');const totalLessons=9,doneCount=doneIds.length,lessonPct=Math.round(doneCount/totalLessons*100);let lastId=0;try{lastId=+(localStorage.getItem('gtrLessonsLast')||0)}catch(e){}const lessonNames={1:'Akord C; G',2:'Akordy D; Em; Am',3:'Základní strumming',4:'Přechody',5:'Akordy E; A; Dm',6:'Barré: F a Hm',7:'První melodie',8:'Pop/folk D-DU-UDU',9:'Country a balada'};const lastTitle=lessonNames[lastId]||'Zatím žádná';let chordCount='–',strumCount='–',statNote='Přihlas se pro načtení statistik';if(user&&sb){try{const r=await sb.from('practice_stats').select('kind').order('created_at',{ascending:false}).limit(1000);if(!r.error){const rows=r.data||[];chordCount=rows.filter(x=>x.kind==='chord').length;strumCount=rows.filter(x=>x.kind==='strum').length;statNote='Posledních max. 1000 uložených záznamů'}}catch(e){console.warn('home summary stats',e)}}box.innerHTML=`<div class="home-tile"><div class="small">Pokrok v lekcích</div><div class="v">${lessonPct} %</div><div class="progress-track"><i style="width:${lessonPct}%"></i></div><div class="s">${doneCount} z ${totalLessons} lekcí hotovo</div></div><div class="home-tile"><div class="small">Poslední lekce</div><div class="v" style="font-size:22px">${lastId?`Lekce ${lastId}`:'—'}</div><div class="s">${lastTitle}</div></div><div class="home-tile"><div class="small">Úspěšné akordy</div><div class="v">${chordCount}</div><div class="s">${statNote}</div></div><div class="home-tile"><div class="small">Cvičení rytmu</div><div class="v">${strumCount}</div><div class="s">Uložené tréninky</div></div>`;const nextId=Math.min(totalLessons,(doneCount<totalLessons?Math.max(1,doneCount+1):totalLessons));next.innerHTML=`<h3>🎯 Další krok</h3><div class="mut">${doneCount<totalLessons?`Doporučená další lekce: <b>Lekce ${nextId}</b> – ${lessonNames[nextId]}`:'Výukový plán je dokončený.'}</div><div class="row" style="margin-top:12px"><button id="homeLessonsBtn" class="on">Otevřít lekce →</button><button id="homeChordsBtn">🎵 Akordy</button></div>`;$('homeLessonsBtn').onclick=()=>document.querySelector('#tabs button[data-t="lessons"]').click();$('homeChordsBtn').onclick=()=>document.querySelector('#tabs button[data-t="check"]').click()};window.refreshHomeSummary();
+function renderDetail(id){try{localStorage.setItem(LAST,String(id))}catch(e){}let l=lesson(id),sec=sections.find(s=>s.lessons.includes(l));$('lkRoot').innerHTML='<div class="card"><button id="lkBack">‹ Zpět na plán</button><h2 style="margin:14px 0 4px">Lekce '+l.id+': '+l.title+'</h2><div class="small">Sekce '+sec.id+' · '+sec.title+'</div>'+(l.chords?'<div class="lk-chords">'+l.chords.map(c=>'<div class="ch">'+diagram(byName(c),100)+'</div>').join('')+'</div>':'')+'<div class="lk-tip"><b>Cíl:</b> '+l.goal+'</div>'+l.steps.map((x,i)=>'<div class="lk-step"><span>'+(i+1)+'</span><div>'+x+'</div></div>').join('')+(l.tab?'<div class="lk-tab">'+l.tab+'</div>':'')+'<div class="lk-tip">💡 '+l.tip+'</div><div class="row" style="margin-top:14px"><button id="lkGo" class="on">Procvičit →</button><button id="lkDone">'+(done.has(l.id)?'Zrušit označení':'Označit jako hotovou')+'</button></div><div class="small" id="lkSync" style="margin-top:10px">'+statusText(sync)+'</div></div>';$('lkBack').onclick=()=>{view=null;render()};$('lkGo').onclick=()=>{document.querySelector('#tabs button[data-t="'+(l.go.tab==='check'?'lib':l.go.tab)+'"]').click();try{if(l.go.chord){{const gc=byName(l.go.chord);showLib(gc);if(l.go.tab==='check')openDetails(gc)}}if(l.go.pat!=null){$('patSel').value=l.go.pat;$('patSel').dispatchEvent(new Event('change'))}if(l.go.bpm){$('bpm').value=l.go.bpm;$('bpm').dispatchEvent(new Event('input'))}if(l.go.prog)$('prog').value=l.go.prog}catch(e){console.warn(e)}};$('lkDone').onclick=()=>{const on=!done.has(l.id);on?done.add(l.id):done.delete(l.id);save();push(l.id,on);render()}}
+document.querySelector('#tabs button[data-t="lessons"]').addEventListener('click',()=>{view=null;render()});
+const LAST='gtrLessonLast';
+function nextLesson(){
+  let lastId=0;try{lastId=+localStorage.getItem(LAST)||0}catch(e){}
+  const L=lesson(lastId);
+  if(L&&!done.has(L.id))return {l:L,why:'rozpracovaná lekce'};
+  const st=L?all.indexOf(L)+1:0;
+  for(let k=0;k<all.length;k++){const x=all[(st+k)%all.length];if(!done.has(x.id))return {l:x,why:(L||done.size)?'další v pořadí':'začni tady'}}
+  return null;
+}
+window.lessonsApi={
+  info(){const n=all.filter(x=>done.has(x.id)).length,nx=nextLesson();
+    return {total:all.length,done:n,pct:Math.round(n/all.length*100),
+      sections:sections.map(x=>({id:x.id,title:x.title,done:x.lessons.filter(y=>done.has(y.id)).length,total:x.lessons.length})),
+      next:nx&&{id:nx.l.id,title:nx.l.title,goal:nx.l.goal,why:nx.why,sec:sections.find(x=>x.lessons.includes(nx.l))}}},
+  open(id){document.querySelector('#tabs button[data-t="lessons"]').click();view=id;render()}
+};
+render();renderHome()})()
+;(function(){
+  if(!('serviceWorker' in navigator)||!/^https?:$/.test(location.protocol))return;
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('Service worker',e)));
+})();
 </script>
 </body>
 </html>
