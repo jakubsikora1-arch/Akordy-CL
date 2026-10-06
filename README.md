@@ -6,7 +6,7 @@ Webová aplikace (PWA) pro výuku a procvičování hry na kytaru. Běží v pro
 
 ```
 /
-├── index.html                 celá aplikace (HTML, CSS, JS, vestavěné nahrávky)
+├── index.html                 aplikace (HTML, CSS, JS, vestavěné nahrávky)
 ├── sw.js                      service worker (offline režim)
 ├── manifest.webmanifest       konfigurace PWA
 ├── icon-32.png                favicon
@@ -14,24 +14,30 @@ Webová aplikace (PWA) pro výuku a procvičování hry na kytaru. Běží v pro
 ├── icon-192.png               ikona aplikace
 ├── icon-512.png               ikona aplikace
 ├── icon-maskable-512.png      maskable ikona
-├── icon-source.svg            zdrojový soubor ikony (aplikace jej nepoužívá)
+├── icon-source.svg            zdroj ikony
+├── A.wav … Dsus4.wav          15 doplňujících akordových zvuků
+├── AUDIO-LICENSES.md          původ a licence zvuků
+├── SONGS.md                   seznam písní pro cvičení
 └── README.md
 ```
 
-Aplikace je jediný soubor `index.html`. Nepoužívá samostatné `app.js`, `style.css` ani WAV soubory – nahrávky jsou uložené přímo v `index.html` (base64).
+Aplikace a všechny její provozní soubory jsou v kořeni projektu. Doplňující WAVy se načítají z kořene při přehrání a service worker je ukládá pro offline použití.
 
 ## Záložky
 
-Dolní navigace: **Domů, Akordy, Rytmus, Lekce, Statistiky**.
+Dolní navigace: **Domů, Akordy, Hraj, Rytmus, Lekce, Statistiky**.
 
 ### Domů
 Přehled: pokračování v rozpracované/další lekci, celkový postup (%), počet zahraných akordů a cvičení rytmu, průměrná shoda akordů, průměr v rytmu, série dní, tři nejméně procvičené akordy, poslední cvičení rytmu a rychlý start. Statistiky se zobrazují po přihlášení.
 
 ### Akordy
 - slovník 20 akordů s grafickým hmatem: C, D, E, G, A, F, Am, Dm, Em, Hm, C7, D7, E7, G7, A7, H7, Cmaj7, Fmaj7, Asus2, Dsus4,
-- přehrání vestavěné nahrávky (C, D, G, Em, Am) nebo syntetického zvuku (pro všechny akordy),
+- přehrání akustické nahrávky pro všech 20 akordů, případně syntetického zvuku,
 - po přihlášení vlastní nahrávka akordu: nahrání souboru (wav, mp3, ogg, webm, m4a, max. 5 MB) nebo 3 s z mikrofonu, případně smazání,
 - tlačítko **Detaily** otevře překryv (cca 3/4 obrazovky) s kontrolou akordu.
+
+### Hraj
+Přehrávač ukázkových akordových postupů s přehráním/pozastavením a posuvníkem, nastavitelným tempem a rytmem. Zobrazuje aktuální i následující hmat na hmatníku a pohyblivé šipky úhozu v rytmu. Zvuk je syntetický doprovod sestavený z akustických samplů kytary; obsahuje základní cvičební postupy.
 
 ### Kontrola akordu mikrofonem
 Využívá Web Audio API a spektrální analýzu (FFT) mikrofonního vstupu:
@@ -67,8 +73,8 @@ Počty úspěšně zahraných akordů s průměrnou shodou a posledních 10 cvi�
 
 Manifest (`manifest.webmanifest`): název *Kytara – trenér akordů a strummingu*, krátký název *Kytara*, jazyk `cs`, režim `standalone`, orientace na výšku, `start_url`, `scope` i `id` jsou `./`. Ikony: 180, 192 a 512 px (any) a maskable ikona (soubor má 1254×1254 px).
 
-Service worker (`sw.js`), cache `kytara-v1`:
-- při instalaci uloží `./`, `index.html`, `manifest.webmanifest`, ikony (`?v=2`) a knihovnu Supabase z CDN,
+Service worker (`sw.js`), cache `kytara-v2`:
+- při instalaci uloží `./`, `index.html`, `manifest.webmanifest`, ikony (`?v=2`), všechny vestavěné doplňující WAVy a knihovnu Supabase z CDN,
 - HTML: nejdřív síť (timeout 4 s), při výpadku kopie z cache,
 - ikony, manifest a knihovna z CDN: z cache s obnovou na pozadí,
 - požadavky na Supabase API (`*.supabase.co`, `*.supabase.in`) se nikdy neukládají do cache,
@@ -90,6 +96,8 @@ python3 -m http.server 8080
 
 a otevři `http://localhost:8080`.
 
+Zdroje a licence doplňujících zvuků popisuje [AUDIO-LICENSES.md](AUDIO-LICENSES.md). Původní nahrávky C, D, G, Em a Am zůstávají beze změny v `index.html`.
+
 ## Nasazení na GitHub Pages
 
 1. Vytvoř repozitář a nahraj všechny soubory do kořene.
@@ -99,7 +107,6 @@ a otevři `http://localhost:8080`.
 
 ## Omezení
 
-- Vestavěné nahrávky jsou jen pro C, D, G, Em a Am; ostatní akordy mají syntetický zvuk (nebo vlastní nahrávku po přihlášení).
 - Rozpoznávání akordů je orientační a analyzuje výšky tónů, ne jednotlivé struny.
 - Přechody mezi akordy aplikace neměří, dokončení lekce je ruční.
 - Neúspěšné pokusy se do statistik neukládají.

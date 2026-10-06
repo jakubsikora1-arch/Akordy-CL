@@ -332,10 +332,12 @@ function click(t,acc){
 }
 
 /* ===== nahrávky (vestavěné + vlastní z cloudu) ===== */
+const AUDIO_FILES={A:'./A.wav',E:'./E.wav',F:'./F.wav',Dm:'./Dm.wav',Hm:'./Hm.wav',C7:'./C7.wav',D7:'./D7.wav',E7:'./E7.wav',G7:'./G7.wav',A7:'./A7.wav',H7:'./H7.wav',Cmaj7:'./Cmaj7.wav',Fmaj7:'./Fmaj7.wav',Asus2:'./Asus2.wav',Dsus4:'./Dsus4.wav'};
 const bufCache={},REC_USER={};   // REC_USER[chord] = řádek z tabulky recordings
-const hasRec=c=>!!AUDIO_B64[c.n]||!!REC_USER[c.n];
+const hasRec=c=>!!AUDIO_B64[c.n]||!!AUDIO_FILES[c.n]||!!REC_USER[c.n];
 async function getBuf(n){
   if(bufCache[n])return bufCache[n];
+  if(AUDIO_FILES[n]){const r=await fetch(AUDIO_FILES[n]);if(!r.ok)throw new Error('Soubor '+n+' není dostupný ('+r.status+')');return bufCache[n]=await ctx().decodeAudioData(await r.arrayBuffer())}
   const b=atob(AUDIO_B64[n]),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);
   return bufCache[n]=await ctx().decodeAudioData(u.buffer);
 }
@@ -460,7 +462,7 @@ function calStep(a){
 let libSel=CH[0];
 function showLib(c){libSel=c;$('libBig').innerHTML=diagram(c,180);$('libName').textContent=c.n;
   $('libPlay').disabled=!hasRec(c);
-  $('libRec').textContent=REC_USER[c.n]?'● Používá se tvoje vlastní nahrávka z cloudu.':hasRec(c)?'● K akordu je vestavěná nahrávka.':'○ Nahrávka chybí, lze přehrát jen syntetický zvuk.';
+  $('libRec').textContent=REC_USER[c.n]?'● Používá se tvoje vlastní nahrávka z cloudu.':AUDIO_FILES[c.n]?'● Akustický zvuk akordu je připraven.':hasRec(c)?'● Vestavěná akustická nahrávka.':'○ Nahrávka chybí, lze přehrát jen syntetický zvuk.';
   $('libInfo').textContent='Tóny: '+c.notes.join(' – ')+'  |  Struny: '+c.f.map(f=>f<0?'x':f).join(' ');
   $('recDel').disabled=!REC_USER[c.n];
   document.querySelectorAll('#libGrid .ch').forEach(e=>e.classList.toggle('sel',e.dataset.n===c.n))}

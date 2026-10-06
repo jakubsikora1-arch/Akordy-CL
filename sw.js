@@ -3,10 +3,11 @@
    - ikony, manifest, knihovna Supabase z CDN: z mezipaměti + obnova na pozadí
    - API Supabase (*.supabase.co) se nikdy neukládá do mezipaměti (data a přihlášení jdou vždy přes síť)
    Změň VERSION jen když přidáš/odebereš soubory v SHELL; samotné index.html se aktualizuje samo. */
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE = 'kytara-' + VERSION;
 const SHELL = ['./', './index.html', './manifest.webmanifest',
-  './icon-32.png?v=2', './icon-180.png?v=2', './icon-192.png?v=2', './icon-512.png?v=2', './icon-maskable-512.png?v=2'];
+  './icon-32.png?v=2', './icon-180.png?v=2', './icon-192.png?v=2', './icon-512.png?v=2', './icon-maskable-512.png?v=2',
+  ...['A','E','F','Dm','Hm','C7','D7','E7','G7','A7','H7','Cmaj7','Fmaj7','Asus2','Dsus4'].map(n => `./${n}.wav`)];
 const CDN = ['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'];
 
 self.addEventListener('install', e => {
