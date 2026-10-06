@@ -1,272 +1,106 @@
-# GuiChords
+# Kytara – trenér akordů a strummingu
 
-Samostatná progresivní webová aplikace (PWA) pro výuku a procvičování hry na kytaru. Je navržena pro iPhone/Safari i desktopové prohlížeče a může fungovat také v offline režimu.
+Webová aplikace (PWA) pro výuku a procvičování hry na kytaru. Běží v prohlížeči (iPhone/Safari i desktop), jde nainstalovat na plochu a základní části fungují i offline.
 
-Přehled
+## Struktura projektu
 
-Aplikace kombinuje procvičování akordů, přehrávání skutečných nahrávek, orientační kontrolu zahraného akordu přes mikrofon a rytmický trénink.
-
-Aplikace je vytvořena jako client-side webová aplikace bez nutnosti serverového backendu pro základní funkce.
-
-Funkce
-
-Akordy
-
-• grafické zobrazení hmatů akordů
-• výběr akordu z nabídky
-• automatické přehrání nahrávky při výběru akordu
-• samostatné tlačítko pro přehrání akordu
-• zobrazení informace, zda je pro akord dostupná skutečná nahrávka
-• orientační kontrola zahraného akordu pomocí mikrofonu
-• simulace správného zahrání pro testování statistiky
-
-Aplikace obsahuje tyto akordy:
-
-• C – C dur
-• D – D dur
-• Dm – D moll
-• E – E dur
-• Em – E moll
-• F – F dur
-• G – G dur
-• A – A dur
-• Am – A moll
-• B – H dur
-• Bm – H moll
-
-Zvukové nahrávky
-
-V kořeni projektu jsou aktuálně tyto skutečné stereo WAV nahrávky akustické kytary:
-
-• C.wav
-• D.wav
-• G.wav
-• Em.wav
-• Am.wav
-
-Nahrávky se přehrávají přímo jako WAV soubory. Aplikace pro chybějící akordy nevytváří syntetický zvuk.
-
-Kontrola akordu přes mikrofon
-
-Kontrola používá Web Audio API a spektrální analýzu mikrofonního vstupu.
-
-Princip:
-
-1. aplikace požádá o přístup k mikrofonu,
-2. několik sekund analyzuje zvuk,
-3. pomocí FFT získává spektrální data,
-4. převádí frekvence na třídy tónů,
-5. porovnává zjištěné tóny s tóny jednotlivých akordů,
-6. vybere nejpravděpodobnější akord a porovná jej s očekávaným akordem.
-
-Výsledek je pouze orientační. Přesnost ovlivňuje zejména ladění kytary, kvalita a umístění mikrofonu, vzdálenost od kytary, okolní hluk, dozvuk místnosti a způsob zahrání.
-
-Mikrofonní funkce proto není určena jako laboratorně přesný tuner nebo profesionální audio analyzátor.
-
-Požadavky na mikrofon
-
-Přístup k mikrofonu vyžaduje zabezpečený kontext:
-
-• HTTPS při použití přes internet,
-• nebo localhost při lokálním vývoji.
-
-Prohlížeč musí mít současně povolení k použití mikrofonu.
-
-Rytmický trenér
-
-Rytmická část obsahuje:
-
-• nastavení tempa 40–220 BPM,
-• takt 4/4,
-• takt 3/4,
-• takt 6/8,
-• několik strumming patternů,
-• vizuální zvýraznění aktuálního úderu,
-• metronomický zvuk,
-• počítání taktů,
-• start/stop tréninku.
-
-Dostupné patterny
-
-4/4
-
-• D D D D
-• D U D U
-• D D U U D U
-• D - D U - U
-• D U - U D U
-
-3/4
-
-• D D D
-• D U D
-• D - U D
-
-6/8
-
-• D - U D - U
-• D U D U D U
-
-Legenda:
-
-• D = úhoz dolů
-• U = úhoz nahoru
-• - = pauza
-
-Náhodný trénink
-
-Režim náhodného tréninku automaticky vybere jeden ze tří taktů, náhodný pattern daného taktu a tempo mezi 70–120 BPM.
-
-Výukový plán
-
-1. Základní akordy – C, G, D, Em a Am; každý akord držet 4 doby.
-2. Přechody – C → G, G → D a Am → C bez zastavení.
-3. Rytmus – začít patternem D U D U při 70 BPM.
-4. První písnička – spojit akordy, přechody a rytmus do souvislé hry.
-
-Statistiky
-
-Aplikace lokálně ukládá statistiky pomocí localStorage.
-
-Sledují se:
-
-• počet kontrol akordů,
-• počet správných výsledků,
-• úspěšnost v procentech,
-• počet spuštěných rytmických tréninků,
-• nejvyšší použité BPM.
-
-Statistiky jsou uloženy pod klíčem guitarTrainer.
-
-K dispozici je také ruční reset statistik.
-
-PWA a offline režim
-
-Aplikace je připravena jako PWA. Manifest definuje název Guitar Trainer CZ, krátký název Guitar Trainer, jazyk cs, režim standalone, startovní URL ./, rozsah ./ a barvy aplikace.
-
-Service Worker zajišťuje lokální cache důležitých souborů aplikace.
-
-Cachované soubory
-
-• index.html
-• style.css
-• app.js
-• manifest.json
-• icon.svg
-• C.wav
-• D.wav
-• G.wav
-• Em.wav
-• Am.wav
-
-Při instalaci Service Worker uloží tyto soubory do cache. Při načítání požadavku nejprve zkontroluje cache; pokud soubor není dostupný, pokusí se jej načíst ze sítě a následně uložit do cache.
-
-Pokud síť selže, Service Worker použije jako fallback index.html.
-
-Cache je verzována jako:
-
-guitar-trainer-cz-v4
-
-Při aktivaci nové verze se staré cache odstraní.
-
-Instalace na iPhone
-
-Po nasazení přes HTTPS:
-
-1. otevři aplikaci v Safari,
-2. klepni na Sdílet,
-3. zvol Přidat na plochu,
-4. spusť aplikaci z nové ikony.
-
-Lokální spuštění
-
-Aplikaci není vhodné otevírat pouze dvojklikem na index.html, zejména pokud chceš používat mikrofon nebo Service Worker.
-
-V kořeni projektu spusť:
-
-python3 -m http.server 8080
-
-Potom otevři:
-
-http://localhost:8080
-
-GitHub Pages
-
-1. Vytvoř GitHub repository.
-2. Nahraj všechny soubory do kořene repository.
-3. Otevři Settings → Pages.
-4. Nastav Deploy from a branch.
-5. Vyber větev main.
-6. Vyber složku / (root).
-7. Po nasazení otevři HTTPS adresu GitHub Pages.
-
-Struktura projektu
-
+```
 /
-├── index.html
-├── style.css
-├── app.js
-├── manifest.json
-├── sw.js
-├── icon.svg
-├── C.wav
-├── D.wav
-├── G.wav
-├── Em.wav
-└── Am.wav
+├── index.html                 celá aplikace (HTML, CSS, JS, vestavěné nahrávky)
+├── sw.js                      service worker (offline režim)
+├── manifest.webmanifest       konfigurace PWA
+├── icon-32.png                favicon
+├── icon-180.png               apple-touch-icon
+├── icon-192.png               ikona aplikace
+├── icon-512.png               ikona aplikace
+├── icon-maskable-512.png      maskable ikona
+├── icon-source.svg            zdrojový soubor ikony (aplikace jej nepoužívá)
+└── README.md
+```
 
-|Soubor                                       |Účel                                               |
-|---------------------------------------------|---------------------------------------------------|
-|`index.html`                                 |HTML rozhraní aplikace                             |
-|`style.css`                                  |vzhled, rozložení a responzivita                   |
-|`app.js`                                     |logika, audio, mikrofon, rytmus, lekce a statistiky|
-|`manifest.json`                              |konfigurace PWA                                    |
-|`sw.js`                                      |Service Worker a offline cache                     |
-|`icon.svg`                                   |ikona aplikace                                     |
-|`C.wav`, `D.wav`, `G.wav`, `Em.wav`, `Am.wav`|skutečné akustické nahrávky akordů                 |
+Aplikace je jediný soubor `index.html`. Nepoužívá samostatné `app.js`, `style.css` ani WAV soubory – nahrávky jsou uložené přímo v `index.html` (base64).
 
-Technické informace
+## Záložky
 
-Aplikace používá:
+Dolní navigace: **Domů, Akordy, Rytmus, Lekce, Statistiky**.
 
-• HTML5
-• CSS3
-• JavaScript
-• Web Audio API
-• MediaDevices / getUserMedia
-• Web Storage API (localStorage)
-• Service Worker API
-• Web App Manifest
-• WAV audio
+### Domů
+Přehled: pokračování v rozpracované/další lekci, celkový postup (%), počet zahraných akordů a cvičení rytmu, průměrná shoda akordů, průměr v rytmu, série dní, tři nejméně procvičené akordy, poslední cvičení rytmu a rychlý start. Statistiky se zobrazují po přihlášení.
 
-Nejde o nativní iOS aplikaci. Jedná se o webovou aplikaci instalovatelnou jako PWA.
+### Akordy
+- slovník 20 akordů s grafickým hmatem: C, D, E, G, A, F, Am, Dm, Em, Hm, C7, D7, E7, G7, A7, H7, Cmaj7, Fmaj7, Asus2, Dsus4,
+- přehrání vestavěné nahrávky (C, D, G, Em, Am) nebo syntetického zvuku (pro všechny akordy),
+- po přihlášení vlastní nahrávka akordu: nahrání souboru (wav, mp3, ogg, webm, m4a, max. 5 MB) nebo 3 s z mikrofonu, případně smazání,
+- tlačítko **Detaily** otevře překryv (cca 3/4 obrazovky) s kontrolou akordu.
 
-Omezení současné verze
+### Kontrola akordu mikrofonem
+Využívá Web Audio API a spektrální analýzu (FFT) mikrofonního vstupu:
+1. vstup se převede na chromagram (12 tónových tříd),
+2. porovnává se se šablonou akordu (50 % teorie, 50 % reálná nahrávka nebo vlastní kalibrace),
+3. akord je správně při shodě alespoň 85 %, přítomnosti všech potřebných tónů a bez tónů navíc,
+4. zobrazí se rozpoznaný akord, shoda, série a počet správných pokusů.
 
-• Reálné audio je dostupné pouze pro C, D, G, Em a Am.
-• Ostatní akordy mají grafický hmat, ale v aktuálním balíčku nemají vlastní WAV nahrávku.
-• Rozpoznávání akordů přes mikrofon je orientační.
-• Statistiky jsou v aktuální verzi ukládány lokálně pomocí localStorage.
-• Rytmický trenér používá vlastní metronomický zvuk.
-• Aplikace zatím neobsahuje automatické rozpoznávání celé písně ani časovou osu akordů.
+Funkce **Naučit z mého hraní** uloží vlastní profil akordu (lokálně a po přihlášení i do cloudu), **Smazat mé kalibrace** je odstraní. Do statistik se ukládají jen úspěšně zahrané akordy. Výsledek je orientační – závisí na ladění, mikrofonu, hluku a dozvuku. Mikrofon vyžaduje HTTPS nebo localhost.
 
-Stav projektu
+### Rytmus
+- tempo 40–200 BPM,
+- 8 vzorů: čtvrťové údery dolů, osminy dolů-nahoru, pop/folk, country, balada, reggae (offbeat), valčík 3/4, rock 16tiny,
+- postup akordů (např. `Am C G D`) a počet taktů na akord (1, 2, 4),
+- metronom, přehrávání ukázky úderů, zvýraznění aktuálního úderu, zobrazení aktuálního a následujícího akordu,
+- volitelné hodnocení rytmu mikrofonem (doporučena sluchátka): časování, odchylka v ms a procento úderů v rytmu. Hodnotí se jen časování, ne směr úderu ani struny.
 
-Aktuální verze představuje funkční základ pro další rozšiřování.
+Legenda: ↓ úder dolů, ↑ úder nahoru, – pauza (ruka se pohybuje dál).
 
-Možné další směry vývoje:
+### Lekce
+3 sekce, 9 lekcí (základní akordy a strumming, pokročilé akordy a barré, rytmus do hloubky). Lekci lze označit jako hotovou; tlačítko „Procvičit“ otevře příslušný akord nebo nastavení rytmu.
 
-• přesnější rozpoznávání akordů,
-• kvalitnější audio přehrávač,
-• trénink přechodů mezi akordy,
-• měření rychlosti přechodů,
-• pokročilejší strumming trenér,
-• detailnější statistiky,
-• rozšíření knihovny reálných nahrávek,
-• postupné lekce a tréninkové úkoly,
-• později přehrávání písně s časovou osou akordů.
+### Statistiky
+Počty úspěšně zahraných akordů s průměrnou shodou a posledních 10 cvičení rytmu (načítá se max. 1000 posledních záznamů).
 
-────────
+## Ukládání dat
 
-Guitar Trainer CZ
-Výuková PWA pro procvičování kytarových akordů, reálných nahrávek a rytmu.
+**Lokálně (localStorage):** nastavení (`gtrSettings`), vlastní profily akordů (`gtrRefs`), hotové lekce (`gtrLessonsDone`), fronta změn lekcí (`gtrLessonsQueue`), fronta statistik (`gtrStatsQueue`), poslední otevřená lekce (`gtrLessonLast`).
+
+**Cloud (Supabase, po přihlášení e-mailem a heslem):** tabulky `profiles`, `settings`, `chord_profiles`, `recordings` (soubory v úložišti `recordings`), `practice_stats`, `lesson_progress`. Knihovna Supabase se načítá z CDN (jsDelivr). Offline se statistiky a postup v lekcích ukládají do fronty v zařízení a po připojení se odešlou.
+
+## PWA a offline režim
+
+Manifest (`manifest.webmanifest`): název *Kytara – trenér akordů a strummingu*, krátký název *Kytara*, jazyk `cs`, režim `standalone`, orientace na výšku, `start_url`, `scope` i `id` jsou `./`. Ikony: 180, 192 a 512 px (any) a maskable ikona (soubor má 1254×1254 px).
+
+Service worker (`sw.js`), cache `kytara-v1`:
+- při instalaci uloží `./`, `index.html`, `manifest.webmanifest`, ikony (`?v=2`) a knihovnu Supabase z CDN,
+- HTML: nejdřív síť (timeout 4 s), při výpadku kopie z cache,
+- ikony, manifest a knihovna z CDN: z cache s obnovou na pozadí,
+- požadavky na Supabase API (`*.supabase.co`, `*.supabase.in`) se nikdy neukládají do cache,
+- při aktivaci se smažou starší cache s předponou `kytara-`.
+
+`VERSION` v `sw.js` měň jen při přidání nebo odebrání souborů v `SHELL`. Při výměně ikon pod stejným názvem zvyš i parametr `?v=` (v HTML, manifestu a `sw.js`).
+
+## Instalace na iPhone
+
+Po nasazení přes HTTPS: otevři aplikaci v Safari → Sdílet → Přidat na plochu → spusť z nové ikony.
+
+## Lokální spuštění
+
+Neotevírej `index.html` dvojklikem (mikrofon a service worker to vyžadují). V kořeni projektu spusť:
+
+```
+python3 -m http.server 8080
+```
+
+a otevři `http://localhost:8080`.
+
+## Nasazení na GitHub Pages
+
+1. Vytvoř repozitář a nahraj všechny soubory do kořene.
+2. Settings → Pages → Deploy from a branch → větev `main`, složka `/ (root)`.
+3. Po nasazení otevři HTTPS adresu GitHub Pages.
+4. V Supabase nastav Site URL a redirect URL na tuto adresu.
+
+## Omezení
+
+- Vestavěné nahrávky jsou jen pro C, D, G, Em a Am; ostatní akordy mají syntetický zvuk (nebo vlastní nahrávku po přihlášení).
+- Rozpoznávání akordů je orientační a analyzuje výšky tónů, ne jednotlivé struny.
+- Přechody mezi akordy aplikace neměří, dokončení lekce je ruční.
+- Neúspěšné pokusy se do statistik neukládají.
+- Aplikace nemá rozpoznávání celé písně ani časovou osu akordů.
