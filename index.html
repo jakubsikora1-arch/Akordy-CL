@@ -29,6 +29,18 @@ nav#tabs button{flex:1;max-width:160px;display:flex;flex-direction:column;align-
 nav#tabs button svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 nav#tabs button:hover{border:0;color:var(--txt)}
 nav#tabs button.on{background:none;color:var(--acc)}
+.tuner-card{margin-bottom:14px}
+.tuner-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.tuner-head h2{font-size:18px;margin:0}
+.tuner-strings{display:grid;gap:8px;margin-top:14px}
+.tune-row{display:grid;grid-template-columns:minmax(150px,1fr) minmax(100px,1.2fr) minmax(120px,1fr);gap:12px;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.tune-row.active{border-color:var(--acc);background:rgba(245,165,36,.08)}
+.tune-note{font-weight:700;font-size:17px}.tune-target{font-size:12px;color:var(--mut);margin-left:6px}
+.tune-track{height:8px;border-radius:10px;background:linear-gradient(90deg,#66404a 0%,#3a2930 35%,#244835 48%,#244835 52%,#3a2930 65%,#66404a 100%);position:relative}
+.tune-needle{position:absolute;left:50%;top:-4px;width:3px;height:16px;border-radius:3px;background:var(--mut);transform:translateX(-50%);transition:left .12s}
+.tune-row.active .tune-needle{background:var(--acc)}
+.tune-result{text-align:right;font-size:13px;color:var(--mut)}.tune-result.good{color:var(--ok)}.tune-result.low,.tune-result.high{color:var(--acc)}
+@media(max-width:520px){.tune-row{grid-template-columns:1fr auto;gap:4px 10px}.tune-track{grid-column:1/-1;grid-row:2}.tune-result{grid-column:2;grid-row:1}}
 /* Hraj – přehrávač akordů */
 .play-hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);gap:12px;align-items:stretch}
 .play-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -130,6 +142,12 @@ body.dt-open{overflow:hidden}
 <main>
 <section id="home" class="on"></section>
 <section id="lib">
+  <div class="card tuner-card">
+    <div class="tuner-head"><div><h2>🎸 Kontrola ladění</h2><div class="small">Standardní ladění E2 – A2 – D3 – G3 – H3 – E4</div></div><button id="tuneToggle" type="button">🎙 Spustit ladičku</button></div>
+    <div id="tuneStatus" class="small" style="margin-top:10px" aria-live="polite">Povol mikrofon a brnkni na jednu strunu.</div>
+    <div id="tuneStrings" class="tuner-strings"></div>
+    <div class="small" style="margin-top:10px">Ladička používá mikrofon zařízení. Brnkni na strunu samostatně a nech tón krátce znít. Zelená oblast znamená naladěno; šipka ukazuje, zda je tón nízko nebo vysoko.</div>
+  </div>
   <div class="card row" id="libCard"><button class="dt-btn" id="libDetails" type="button">Detaily</button>
     <div id="libBig"></div>
     <div>
@@ -352,7 +370,77 @@ async function playChord(c,forceSynth){
 }
 
 /* ===== mikrofon ===== */
+const TUNING=[
+  {string:6,name:'E2',hz:82.41},{string:5,name:'A2',hz:110.00},
+  {string:4,name:'D3',hz:146.83},{string:3,name:'G3',hz:196.00},
+  {string:2,name:'H3 / B3',hz:246.94},{string:1,name:'E4',hz:329.63}
+];
 let mic=null,an=null,anFast=null,fbuf,tbuf,onsetCbs=[],micOn=false;
+let tunerOn=false,tuneRaw=null,tuneData=new Float32Array(4096),lastTuneAt=0;
+function renderTuner(){
+  $('tuneStrings').innerHTML=TUNING.map((s,i)=>`<div class="tune-row" id="tuneRow${i}"><div><span class="small">${s.string}. struna</span> <span class="tune-note">${s.name}</span><span class="tune-target">${s.hz.toFixed(2)} Hz</span></div><div class="tune-track"><i class="tune-needle" id="tuneNeedle${i}"></i></div><div class="tune-result" id="tuneResult${i}">–</div></div>`).join('');
+}
+renderTuner();
+function setTunerIdle(message){
+  $('tuneStatus').textContent=message;
+  TUNING.forEach((_,i)=>{$('tuneRow'+i).classList.remove('active');$('tuneNeedle'+i).style.left='50%';$('tuneResult'+i).className='tune-result';$('tuneResult'+i).textContent='–'});
+}
+function tunerFrequency(){
+  if(!an||!tuneRaw)return null;
+  an.getFloatTimeDomainData(tuneRaw);
+  const stride=8,n=tuneData.length;
+  let mean=0;
+  for(let j=0;j<n;j++){
+    let sum=0,base=j*stride;
+    for(let k=0;k<stride;k++)sum+=tuneRaw[base+k];
+    tuneData[j]=sum/stride;mean+=tuneData[j];
+  }
+  mean/=n;
+  let power=0;
+  for(let i=0;i<n;i++){tuneData[i]-=mean;power+=tuneData[i]*tuneData[i]}
+  if(Math.sqrt(power/n)<.006)return null;
+  const rate=AC.sampleRate/stride,minLag=Math.floor(rate/420),maxLag=Math.min(n-2,Math.ceil(rate/65));
+  const diff=new Float64Array(maxLag+1),cmndf=new Float64Array(maxLag+1);
+  let running=0;
+  for(let lag=1;lag<=maxLag;lag++){
+    let sum=0;
+    for(let i=0;i<n-maxLag;i++){const d=tuneData[i]-tuneData[i+lag];sum+=d*d}
+    diff[lag]=sum;running+=sum;cmndf[lag]=sum*lag/(running||1);
+  }
+  let lag=0;
+  for(let i=minLag;i<maxLag-1;i++)if(cmndf[i]<.20){lag=i;while(lag+1<maxLag&&cmndf[lag+1]<cmndf[lag])lag++;break}
+  if(!lag){let best=1;for(let i=minLag;i<maxLag;i++)if(cmndf[i]<cmndf[best])best=i;if(cmndf[best]>.38)return null;lag=best}
+  const a=cmndf[lag-1],b=cmndf[lag],c=cmndf[lag+1],den=a-2*b+c;
+  const offset=Math.abs(den)<1e-9?0:.5*(a-c)/den;
+  const hz=rate/(lag+offset);
+  return hz>=65&&hz<=420?hz:null;
+}
+function updateTuner(){
+  const now=performance.now();if(now-lastTuneAt<90)return;lastTuneAt=now;
+  const hz=tunerFrequency();
+  if(!hz){setTunerIdle('Čekám na čistý tón jedné struny…');return}
+  let best=0,bestCents=Infinity;
+  TUNING.forEach((s,i)=>{const cents=1200*Math.log2(hz/s.hz);if(Math.abs(cents)<Math.abs(bestCents)){best=i;bestCents=cents}});
+  const midi=Math.round(69+12*Math.log2(hz/440)),note=NAMES[((midi%12)+12)%12]+(Math.floor(midi/12)-1);
+  const rounded=Math.round(bestCents),good=Math.abs(bestCents)<=5;
+  $('tuneStatus').textContent=`Slyším ${note}, ${hz.toFixed(2)} Hz · ${TUNING[best].string}. struna ${TUNING[best].name}`;
+  TUNING.forEach((s,i)=>{
+    const row=$('tuneRow'+i),needle=$('tuneNeedle'+i),result=$('tuneResult'+i);
+    row.classList.toggle('active',i===best);
+    if(i!==best){needle.style.left='50%';result.className='tune-result';result.textContent='–';return}
+    needle.style.left=`${Math.max(0,Math.min(100,50+bestCents))}%`;
+    result.className='tune-result '+(good?'good':bestCents<0?'low':'high');
+    result.textContent=good?'✓ Naladěno':bestCents<0?`↓ ${Math.abs(rounded)} centů pod`:`↑ ${rounded} centů nad`;
+  });
+}
+async function toggleTuner(){
+  if(tunerOn){tunerOn=false;$('tuneToggle').textContent='🎙 Spustit ladičku';setTunerIdle('Ladička pozastavena.');return}
+  tunerOn=true;$('tuneToggle').textContent='■ Zastavit ladičku';$('tuneStatus').textContent='Připravuji mikrofon…';
+  if(!micOn)await startMic();
+  if(!micOn){tunerOn=false;$('tuneToggle').textContent='🎙 Spustit ladičku';setTunerIdle('Mikrofon nelze použít. Povol přístup a zkus to znovu.');return}
+  $('tuneStatus').textContent='Brnkni na jednu strunu a nech tón znít…';
+}
+ $('tuneToggle').onclick=toggleTuner;
 async function startMic(){
   try{
     const a=ctx();
@@ -361,14 +449,14 @@ async function startMic(){
     an=a.createAnalyser();an.fftSize=32768;an.smoothingTimeConstant=0;
     anFast=a.createAnalyser();anFast.fftSize=1024;
     src.connect(an);src.connect(anFast);
-    fbuf=new Float32Array(an.frequencyBinCount);tbuf=new Float32Array(1024);
+    fbuf=new Float32Array(an.frequencyBinCount);tbuf=new Float32Array(1024);tuneRaw=new Float32Array(an.fftSize);
     micOn=true;mic=st;
     $('micBtn').textContent='🎤 Vypnout mikrofon';$('micState').textContent='mikrofon zapnut';
     loop();
   }catch(e){$('micState').textContent='mikrofon nelze použít: '+e.message}
 }
-function stopMic(){mic&&mic.getTracks().forEach(t=>t.stop());micOn=false;mic=null;
-  $('micBtn').textContent='🎤 Zapnout mikrofon';$('micState').textContent='mikrofon vypnut';$('lvl').style.width=0}
+function stopMic(){mic&&mic.getTracks().forEach(t=>t.stop());micOn=false;mic=null;tunerOn=false;tuneRaw=null;
+  $('micBtn').textContent='🎤 Zapnout mikrofon';$('micState').textContent='mikrofon vypnut';$('lvl').style.width=0;$('tuneToggle').textContent='🎙 Spustit ladičku';setTunerIdle('Povol mikrofon a brnkni na jednu strunu.')}
 $('micBtn').onclick=()=>micOn?stopMic():startMic();
 
 let chroma=new Float32Array(12),prevRms=0,lastOnset=0,lvlSmooth=0;
@@ -510,7 +598,7 @@ function updateCheck(a){
 }
 function loop(){
   if(!micOn)return;
-  const a=analyse();updateCheck(a);requestAnimationFrame(loop);
+  const a=analyse();updateCheck(a);if(tunerOn)updateTuner();requestAnimationFrame(loop);
 }
 
 /* ===== strumming ===== */

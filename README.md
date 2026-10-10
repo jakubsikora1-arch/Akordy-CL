@@ -36,6 +36,9 @@ Přehled: pokračování v rozpracované/další lekci, celkový postup (%), po�
 - po přihlášení vlastní nahrávka akordu: nahrání souboru (wav, mp3, ogg, webm, m4a, max. 5 MB) nebo 3 s z mikrofonu, případně smazání,
 - tlačítko **Detaily** otevře překryv (cca 3/4 obrazovky) s kontrolou akordu.
 
+### Kontrola ladění
+V záložce **Akordy** je ladička pro standardní ladění E2–A2–D3–G3–H3/B3–E4. Spustí mikrofon, rozpozná slyšenou výšku tónu, ukáže frekvenci a odchylku v centech a označí, zda je struna pod laděním, nad laděním, nebo naladěná. Pro nejlepší výsledek brnkni na jednu strunu a nech ji znít. Mikrofon vyžaduje HTTPS nebo localhost.
+
 ### Hraj
 Přehrávač ukázkových akordových postupů s přehráním/pozastavením a posuvníkem, nastavitelným tempem a rytmem. Zobrazuje aktuální i následující hmat na hmatníku a pohyblivé šipky úhozu v rytmu. Zvuk je syntetický doprovod sestavený z akustických samplů kytary; obsahuje základní cvičební postupy.
 
